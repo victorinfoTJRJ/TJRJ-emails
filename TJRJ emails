@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de E-mails</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #888;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #007bff;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #005fcc;
+        }
+
+        .resultado-item {
+            padding: 10px;
+            background: #f0f8ff;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h2>Buscador de E-mails</h2>
+
+    <input type="text" id="nome" placeholder="Digite um nome ou instituição">
+    <button onclick="buscarEmail()">Buscar</button>
+
+    <div id="resultado" style="margin-top: 20px;"></div>
+</div>
+
+<script>
+const emails = {
+"99": "juridico@99app.com",
+"aeronautica": "protocolo.dirap@fab.mil.br",
+"aerus": "juridico@aerus.com.br",
+"apresentação pm audiencia": "cgpm.apresentacao@gmail.com",
+"assistencia social": "protocolo.smas@prefeitura.rio",
+"atento": "juridico.oficios@atento.com",
+"auxilio emergencial": "documentacaosenarc@cidadania.gov",
+"banco bradesco": "ofíciosjudicias@bradesco.com.br",
+"banco c6": "faleconosco@c6bank.com.br",
+"banco central": "admin.ecm.deinf@bcb.gov.br",
+"banco do brasil": "cenopserv.oficioscwb@bb.com.br",
+"banco do nordeste": "relacionamento@bnb.gov.br",
+"banco pan": "atendimento@grupopan.com.br"
+};
+
+// Normaliza texto (remove acentos e deixa minúsculo)
+function normalizeText(str) {
+    if (!str) return "";
+    return str.toString().toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+}
+
+function buscarEmail() {
+    const nomeRaw = document.getElementById("nome").value || "";
+    const termo = normalizeText(nomeRaw.trim());
+    const resultadoDiv = document.getElementById("resultado");
+
+    if (!termo) {
+        resultadoDiv.innerHTML = "Por favor, digite um nome ou e-mail para buscar.";
+        return;
+    }
+
+    const resultados = [];
+
+    for (const chave in emails) {
+        const chaveNorm = normalizeText(chave);
+        const emailNorm = normalizeText(emails[chave]);
+
+        if (chaveNorm.includes(termo) || emailNorm.includes(termo)) {
+            resultados.push({ chave, email: emails[chave] });
+        }
+    }
+
+    if (resultados.length === 0) {
+        resultadoDiv.innerHTML = "Nenhum resultado encontrado.";
+        return;
+    }
+
+    resultadoDiv.innerHTML = resultados.map(r => `
+        <div class="resultado-item">
+            <strong>${escapeHtml(r.chave)}</strong>: 
+            <span>${escapeHtml(r.email)}</span>
+        </div>
+    `).join("<hr>");
+}
+
+// Evita injeção HTML
+function escapeHtml(text) {
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+</script>
+</body>
+</html>
