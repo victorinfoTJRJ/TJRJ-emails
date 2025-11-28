@@ -1,77 +1,75 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de E-mails</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.15);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #888;
-            margin-bottom: 15px;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            background: #007bff;
-            color: white;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #005fcc;
-        }
-
-        .resultado-item {
-            padding: 10px;
-            background: #f0f8ff;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Pesquisa de Contatos</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+    }
+    #search {
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        border: 1px solid #aaa;
+    }
+    #results {
+        background: white;
+        padding: 15px;
+        border-radius: 6px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    .item {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+    .item:last-child {
+        border-bottom: none;
+    }
+    .name {
+        font-weight: bold;
+        color: #333;
+    }
+    .email, .telefone {
+        margin-top: 4px;
+    }
+</style>
 </head>
-
 <body>
-<div class="container">
-    <h2>Buscador de E-mails</h2>
 
-    <input type="text" id="nome" placeholder="Digite um nome ou instituição">
-    <button onclick="buscarEmail()">Buscar</button>
+<h1>Pesquisar Contatos</h1>
 
-    <div id="resultado" style="margin-top: 20px;"></div>
-</div>
+<input type="text" id="search" placeholder="Digite nome, órgão, telefone ou e-mail...">
+
+<div id="results"></div>
 
 <script>
-const emails = {
+const contatos = [
+    { org: "SECRETARIA DE ESTADO DE DESENVOLVIMENTO SOCIAL E DIREITOS HUMANOS – Contatos Gerais", tel: "2334-5517, 2334-5550", email: "gabinete2@sedsdh.rj.gov.br" },
+    { org: "SECRETARIA DE ESTADO DE DESENVOLVIMENTO SOCIAL E DIREITOS HUMANOS – FIA", tel: "2334-8030", email: "fia@fia.rj.gov.br" },
+    { org: "SECRETARIA DE ESTADO DE DESENVOLVIMENTO SOCIAL E DIREITOS HUMANOS – Fundação Leão XIII", tel: "2334-7439", email: "chefiadegabinete@leao.rj.gov.br" },
+    { org: "SECRETARIA DE ESTADO DE CULTURA – Contatos Gerais", tel: "2216-8500", email: "gabinete@cultura.rj.gov.br" },
+    { org: "SECRETARIA DE ESTADO DE CULTURA – FUNARJ", tel: "2333-4093", email: "pres@funarj.rj.gov.br" },
+    { org: "SECRETARIA DE ESPORTE – Contatos Gerais", tel: "2333-3653", email: "gabinete@esportelazerejuventude.rj.gov.br" },
+    { org: "SECRETARIA DE ESPORTE – SUDERJ", tel: "2334-1654", email: "presidencia@suderj.rj.gov.br, vpa@suderj.rj.gov.br" },
+    { org: "SECRETARIA DE TURISMO – Contatos Gerais", tel: "3803-9367, 3803-9366", email: "gabinetesetur@gmail.com, gabinete.turismo@gmail.com" },
+    { org: "SECRETARIA DE TURISMO – TURISRIO", tel: "3803-9375", email: "presidencia@turismo.rj.gov.br" },
+    { org: "SECRETARIA DAS CIDADES – Contatos Gerais", tel: "2332-5548, 2332-5535", email: "gabinete@cidades.rj.gov.br" },
+    { org: "SECRETARIA DAS CIDADES – DER", tel: "2334-5994, 2332-5570", email: "presidencia@der.rj.gov.br" },
+    { org: "SECRETARIA DAS CIDADES – ITERJ", tel: "2332-7244", email: "presidencia@iterj.rj.gov.br" },
+    { org: "CONTROLADORIA GERAL DO ESTADO", tel: "2333-1814", email: "controladoria@cge.rj.gov.br" },
+    { org: "GABINETE DE SEGURANÇA INSTITUCIONAL", tel: "2334-3213, 2334-3501", email: "gabinete.gsi@gmail.com, gsi@gsi.rj.gov.br" },
+    { org: "SECRETARIA DE FAZENDA – Contatos Gerais", tel: "2334-4511", email: "gabsefaz@fazenda.rj.gov.br" },
+    { org: "SECRETARIA DE FAZENDA – RIOPREVIDÊNCIA", tel: "2332-5338, 2332-5376, 2332-5358", email: "secretaria.pre@rioprevidencia.rj.gov.br" },
+    { org: "SECRETARIA DE FAZENDA – RJPREV", tel: "2334-9653", email: "rjprev@rjprev.org.br" },
+    const emails = {
 "99": "juridico@99app.com",
 "aeronautica": "protocolo.dirap@fab.mil.br",
 "aerus": "juridico@aerus.com.br",
@@ -79,63 +77,183 @@ const emails = {
 "assistencia social": "protocolo.smas@prefeitura.rio",
 "atento": "juridico.oficios@atento.com",
 "auxilio emergencial": "documentacaosenarc@cidadania.gov",
-"banco bradesco": "ofíciosjudicias@bradesco.com.br",
+"banco bradesco": "oficiosjudicias@bradesco.com.br",
 "banco c6": "faleconosco@c6bank.com.br",
 "banco central": "admin.ecm.deinf@bcb.gov.br",
 "banco do brasil": "cenopserv.oficioscwb@bb.com.br",
 "banco do nordeste": "relacionamento@bnb.gov.br",
-"banco pan": "atendimento@grupopan.com.br"
-};
+"banco pan": "atendimento@grupopan.com / oficios.legal@grupopan.com",
+"banco safra": "oficiosjudiciais@safra.com.br",
+"bombeiros": "dgp@cbmerj.rj.gov.br",
+"bovespa": "atendimento.oficios@b3.com.br",
+"caixa economica federal": "ag0219@caixa.gov.br",
+"caixa economica federal pensao": "cepes14@caixa.gov.br",
+"caixa seguradora": "gecre@caixaseguradora.com.br",
+"caps clarice lispector": "smdcscapsclaricelispector@gmail.com",
+"carta precatoria tjsp": "spprecatoriascv@usp.com.br",
+"carta rogatoria tjrj": "serei@tjrj.jus.br",
+"cartorio 9 oficio de notas": "cartorio9oficiodenotas@gmail.com",
+"casdh madureira": "creasmarcialopes@yahoo.com.br",
+"claro": "oficios.doc@claro.com.br",
+"cms albertoborgeth": "pomaborgeth@rio.rj.gov.br",
+"coelba": "juridicooficios.ba@neoenergiacoelba.com.br",
+"comgás": "oficios@comgas.com.br",
+"conselho tutelar": "conselhotutelarrj@gmail.com",
+"correios": "atendimento.corporativo@correios.com.br",
+"creas paes leme": "creaspaesleme@gmail.com",
+"csi segurança": "contato@csiseguranca.com.br",
+"defensoria publica rj": "gabinete@defensoria.rj.def.br",
+"detran rj": "protocolo@detran.rj.gov.br",
+"detran rj multas": "recursosmultas@detran.rj.gov.br",
+"detro": "oficios@detro.rj.gov.br",
+"disque denuncia": "denuncia@disquedenuncia.org.br",
+"dpu": "atendimento@dpu.def.br",
+"ebrae": "juridico@ebrae.com.br",
+"eletrobras": "atendimento@eletrobras.com",
+"embratel": "oficios@embratel.com.br",
+"energisa": "relacionamento.juridico@energisa.com.br",
+"enel": "atendimentojuridico@enel.com",
+"esocial": "esocial@economia.gov.br",
+"facerj": "contato@facerj.com.br",
+"fundo de garantia": "fgtsatendimento@caixa.gov.br",
+"furj": "contato@furj.rj.gov.br",
+"habite se rj": "habiteserj@urbanismo.rj.gov.br",
+"hemorio": "atendimento@hemorio.rj.gov.br",
+"hemorio doações": "doacoes@hemorio.gov.br",
+"hospital lourenco jorge": "hospitallourencojorge@gmail.com",
+"hospital miguel couto": "hmcprotocolo@rio.rj.gov.br",
+"hospital miguel couto emergencia": "emergenciahmc@gmail.com",
+"hospital pedro ii": "hpi@rio.rj.gov.br",
+"hospital salgado filho": "hsf@rio.rj.gov.br",
+"icrj": "juridico@icrj.org.br",
+"inss": "atendimento@inss.gov.br",
+"inss beneficios": "beneficios@inss.gov.br",
+"instituto medico legal": "oficiosiml@pcivil.rj.gov.br",
+"itau": "oficiosjudiciais@itau-unibanco.com.br",
+"justiça federal rj": "protocolo.rj@trf2.jus.br",
+"light": "relacionamento.juridico@light.com.br",
+"marinha": "protocolo@marinha.mil.br",
+"ministerio da saude": "gabinete@saude.gov.br",
+"ministerio da cidadania": "documentacao@cidadania.gov.br",
+"ministerio do trabalho": "mte.geral@trabalho.gov.br",
+"ministério publico rj": "gabinete@mprj.mp.br",
+"oab rj": "atendimento@oabrj.org.br",
+"oi": "oficios@oi.net.br",
+"ouvidoria rj": "ouvidoria@rj.gov.br",
+"policia civil rj": "dgp@pcivil.rj.gov.br",
+"policia federal": "sjsp.atendimento@pf.gov.br",
+"policia militar rj": "pmrj@pm.rj.gov.br",
+"prefeitura do rio": "gabinete@prefeitura.rio",
+"procon rj": "atendimento@procon.rj.gov.br",
+"proderj": "contato@proderj.rj.gov.br",
+"proderj suporte": "suporte@proderj.rj.gov.br",
+"sus": "atendimento@sus.gov.br",
+"tim": "oficios@timbrasil.com.br",
+"tjrj": "gabinete@tjrj.jus.br",
+"tj rj precatorias": "precatorias@tjrj.jus.br",
+"tse": "atendimento@tse.jus.br",
+"uber": "oficios@uber.com",
+"vivo": "oficios@vivo.com.br",
+"xpi investimentos": "oficios@xpi.com.br",
+"rioprevidencia": "atendimento@rioprevidencia.rj.gov.br",
+"ministerio da fazenda": "fazendaatendimento@economia.gov.br",
+"ministerio da economia": "economia@economia.gov.br",
+"receita estadual rj": "receitaestadual@rj.gov.br",
+"receita federal": "atendimento.receita@rfb.gov.br",
+"secretaria de fazenda rj": "sefaz.rj@gov.br",
+"ssp rj": "ssp@rj.gov.br",
+"anatel": "oficios@anatel.gov.br",
+"ans": "atendimento@ans.gov.br",
+"bombeiros rj": "cbmerj@cbmerj.rj.gov.br",
+"cremerj": "cremerj@cremerj.org.br",
+"crm rj": "crm@crm-rj.gov.br",
+"detro rj": "detro@rj.gov.br",
+"detran sp": "oficios@detran.sp.gov.br",
+"detran mg": "oficios@detran.mg.gov.br",
+"embratur": "atendimento@embratur.gov.br",
+"funai": "funai@funai.gov.br",
+"ibama": "atendimentogeral@ibama.gov.br",
+"ibge": "atendimento@ibge.gov.br",
+"inmetro": "inmetro@inmetro.gov.br",
+"justiça eleitoral rj": "atendimento@tre-rj.jus.br",
+"justiça eleitoral sp": "atendimento@tre-sp.jus.br",
+"justiça eleitoral mg": "atendimento@tre-mg.jus.br",
+"procuradoria rj": "pge@pge.rj.gov.br",
+"procuradoria geral da republica": "pgr@mpf.mp.br",
+"procuradoria da união rj": "agu.rj@agu.gov.br",
+"secretaria de fazenda sp": "sefaz@sp.gov.br",
+"secretaria de saúde rj": "saude@rj.gov.br",
+"secretaria de saúde sp": "saude@sp.gov.br",
+"secretaria de saúde mg": "saude@mg.gov.br",
+"sus rj": "sus@rj.gov.br",
+"sus sp": "sus@sp.gov.br",
+"sus mg": "sus@mg.gov.br",
+"tribunal de contas rj": "tce@tce.rj.gov.br",
+"tribunal de contas sp": "tce@tce.sp.gov.br",
+"tribunal de contas mg": "tce@tce.mg.gov.br",
+"ouvidoria justiça rj": "ouvidoria@tjrj.jus.br",
+"ouvidoria justiça sp": "ouvidoria@tjsp.jus.br",
+"ouvidoria justiça mg": "ouvidoria@tjmg.jus.br"
+"tj rj": "atendimento@tjrj.jus.br",
+"tj sp": "atendimento@tjsp.jus.br",
+"tj mg": "atendimento@tjmg.jus.br",
+"stf": "secretaria@stf.jus.br",
+"stj": "secretaria@stj.jus.br",
+"trf1": "ouvidoria@trf1.jus.br",
+"trf2": "ouvidoria@trf2.jus.br",
+"trf3": "ouvidoria@trf3.jus.br",
+"trf4": "ouvidoria@trf4.jus.br",
+"trf5": "ouvidoria@trf5.jus.br",
+"tse": "tse@tse.jus.br",
+"tre rj": "ouvidoria@tre-rj.jus.br",
+"tre sp": "ouvidoria@tre-sp.jus.br",
+"tre mg": "ouvidoria@tre-mg.jus.br",
+"camara dos deputados": "ouvidoria@camara.leg.br",
+"senado federal": "ouvidoria@senado.leg.br",
+"anac": "oficios@anac.gov.br",
+"antt": "oficios@antt.gov.br",
+"ans": "oficios@ans.gov.br",
+"anvisa": "oficios@anvisa.gov.br",
+"bacen": "atendimentogeral@bcb.gov.br",
+"prefeitura sp": "oficial@prefeitura.sp.gov.br",
+"prefeitura bh": "atendimento@pbh.gov.br",
+"defensoria sp": "defensoria@sp.gov.br",
+"defensoria rj": "defensoria@rj.def.br",
+"defensoria mg": "defensoria@mg.def.br",
+"mp rj": "ouvidoria@mprj.mp.br",
+"mp sp": "ouvidoria@mpsp.mp.br",
+"mp mg": "ouvidoria@mpmg.mp.br",
+"mpf": "mpf@mpf.mp.br",
+"pf": "policiafederal@pf.gov.br",
+"prf": "prf@prf.gov.br",
+"dnit": "dnit@dnit.gov.br",
+"funasa": "funasa@funasa.gov.br",
+"casan": "casan@casan.com.br",
+"corsan": "corsan@corsan.com.br",
+"sabesp": "sabesp@sabesp.com.br",
+"crea rj": "crea@crea-rj.org.br",
+"crea sp": "crea@creasp.org.br",
+"crm sp": "crm@crmsp.gov.br",
+"crm mg": "crm@crmmg.gov.br"
+];
 
-// Normaliza texto (remove acentos e deixa minúsculo)
-function normalizeText(str) {
-    if (!str) return "";
-    return str.toString().toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
-}
+document.getElementById("search").addEventListener("input", function () {
+    let q = this.value.toLowerCase();
+    let res = contatos.filter(c =>
+        c.org.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        c.tel.toLowerCase().includes(q)
+    );
 
-function buscarEmail() {
-    const nomeRaw = document.getElementById("nome").value || "";
-    const termo = normalizeText(nomeRaw.trim());
-    const resultadoDiv = document.getElementById("resultado");
-
-    if (!termo) {
-        resultadoDiv.innerHTML = "Por favor, digite um nome ou e-mail para buscar.";
-        return;
-    }
-
-    const resultados = [];
-
-    for (const chave in emails) {
-        const chaveNorm = normalizeText(chave);
-        const emailNorm = normalizeText(emails[chave]);
-
-        if (chaveNorm.includes(termo) || emailNorm.includes(termo)) {
-            resultados.push({ chave, email: emails[chave] });
-        }
-    }
-
-    if (resultados.length === 0) {
-        resultadoDiv.innerHTML = "Nenhum resultado encontrado.";
-        return;
-    }
-
-    resultadoDiv.innerHTML = resultados.map(r => `
-        <div class="resultado-item">
-            <strong>${escapeHtml(r.chave)}</strong>: 
-            <span>${escapeHtml(r.email)}</span>
+    document.getElementById("results").innerHTML = res.map(c => `
+        <div class="item">
+            <div class="name">${c.org}</div>
+            <div class="telefone"><strong>Telefone:</strong> ${c.tel}</div>
+            <div class="email"><strong>Email:</strong> ${c.email}</div>
         </div>
-    `).join("<hr>");
-}
-
-// Evita injeção HTML
-function escapeHtml(text) {
-    return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+    `).join("");
+});
 </script>
+
 </body>
 </html>
